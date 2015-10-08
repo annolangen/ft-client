@@ -3,12 +3,15 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>net.anno</groupId>
-  <artifactId>FtClient</artifactId>
+  <artifactId>ft-client</artifactId>
   <version>1.0-SNAPSHOT</version>
   <packaging>jar</packaging>
 
-  <name>FtClient</name>
-  <url>http://maven.apache.org</url>
+  <name>ft-client</name>
+  <url>https://github.com/annolangen/ft-client</url>
+  <scm>
+    <url>https://github.com/annolangen/ft-client</url>
+  </scm>
 
   <prerequisites>
     <maven>3.0</maven>
@@ -45,7 +48,7 @@
         <configuration>
           <archive>
             <manifest>
-              <mainClass>net.anno.App</mainClass>
+              <mainClass>net.anno.FtClient</mainClass>
             </manifest>
           </archive>
         </configuration>

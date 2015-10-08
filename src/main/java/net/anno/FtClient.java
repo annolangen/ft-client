@@ -25,7 +25,7 @@ import java.util.List;
 /**
  * Hello world!
  */
-public class App {
+public class FtClient {
 
   private static Fusiontables getFusiontables() throws IOException, GeneralSecurityException {
     File dataDirectory = new File(System.getProperty("user.home"), ".store/ft_client");

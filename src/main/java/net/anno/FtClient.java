@@ -29,6 +29,9 @@ public class FtClient {
 
   private static Fusiontables getFusiontables() throws IOException, GeneralSecurityException {
     File dataDirectory = new File(System.getProperty("user.home"), ".store/ft_client");
+    if (!dataDirectory.exists()) {
+      dataDirectory.mkdirs();
+    }
     File secretsFile = new File(dataDirectory, "client_secrets.json");
     if (!secretsFile.exists()) {
       System.out.println(

@@ -1,38 +1,50 @@
 package net.anno;
 
-import junit.framework.Test;
+import com.google.api.services.fusiontables.Fusiontables;
+import com.google.api.services.fusiontables.model.Sqlresponse;
+import com.google.common.truth.Truth;
+
 import junit.framework.TestCase;
-import junit.framework.TestSuite;
+
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+
+import static com.google.common.truth.Truth.assertThat;
+import static java.util.Arrays.asList;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.when;
 
 /**
- * Unit test for simple App.
+ * Unit test for {@link FtClient}.
  */
-public class FtClientTest
-    extends TestCase
-{
-    /**
-     * Create the test case
-     *
-     * @param testName name of the test case
-     */
-    public FtClientTest(String testName)
-    {
-        super( testName );
-    }
+public class FtClientTest extends TestCase {
 
-    /**
-     * @return the suite of tests being tested
-     */
-    public static Test suite()
-    {
-        return new TestSuite( FtClientTest.class );
-    }
+  @Mock Fusiontables fusiontables;
+  @Mock Fusiontables.Query query;
+  @Mock Fusiontables.Query.Sql sql;
+  @Mock Fusiontables.Query.SqlGet sqlGet;
+  FtClient ftClient;
 
-    /**
-     * Rigourous Test :-)
-     */
-    public void testApp()
-    {
-        assertTrue( true );
-    }
+  @Override
+  protected void setUp() throws Exception {
+    MockitoAnnotations.initMocks(this);
+    when(fusiontables.query()).thenReturn(query);
+    when(query.sql(anyString())).thenReturn(sql);
+    when(query.sqlGet(anyString())).thenReturn(sqlGet);
+    ftClient = new FtClient(fusiontables);
+  }
+
+  public void testApp() throws Exception {
+    Sqlresponse sqlresponse =
+        new Sqlresponse().setColumns(asList("A", "B")).setRows(asList(asList((Object) "a", "b")));
+    when(sqlGet.execute()).thenReturn(sqlresponse);
+    ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+    ftClient.run(new PrintStream(out));
+
+    assertThat(out.toString()).isEqualTo("[A, B]\n" + "[a, b]\n");
+  }
 }

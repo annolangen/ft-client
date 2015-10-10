@@ -18,6 +18,7 @@ import com.google.api.services.fusiontables.model.Sqlresponse;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 import java.util.List;
@@ -26,6 +27,20 @@ import java.util.List;
  * Hello world!
  */
 public class FtClient {
+  Fusiontables fusiontables;
+
+  public FtClient(Fusiontables fusiontables) {
+    this.fusiontables = fusiontables;
+  }
+
+  void run(PrintStream out) throws IOException {
+    Fusiontables.Query.SqlGet sqlGet = fusiontables.query().sqlGet("show tables");
+    Sqlresponse sqlresponse = sqlGet.execute();
+    out.println(sqlresponse.getColumns());
+    for (List<Object> list : sqlresponse.getRows()) {
+      out.println(list);
+    }
+  }
 
   private static Fusiontables getFusiontables() throws IOException, GeneralSecurityException {
     File dataDirectory = new File(System.getProperty("user.home"), ".store/ft_client");
@@ -63,12 +78,6 @@ public class FtClient {
   }
 
   public static void main(String[] args) throws Exception {
-    Fusiontables fusiontables = getFusiontables();
-    Fusiontables.Query.SqlGet sqlGet = fusiontables.query().sqlGet("show tables");
-    Sqlresponse sqlresponse = sqlGet.execute();
-    System.out.println(sqlresponse.getColumns());
-    for (List<Object> list : sqlresponse.getRows()) {
-      System.out.println(list);
-    }
+     new FtClient(getFusiontables()).run(System.out);
   }
 }

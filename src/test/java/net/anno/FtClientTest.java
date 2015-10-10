@@ -2,7 +2,6 @@ package net.anno;
 
 import com.google.api.services.fusiontables.Fusiontables;
 import com.google.api.services.fusiontables.model.Sqlresponse;
-import com.google.common.truth.Truth;
 
 import junit.framework.TestCase;
 
@@ -45,6 +44,7 @@ public class FtClientTest extends TestCase {
 
     ftClient.run(new PrintStream(out));
 
-    assertThat(out.toString()).isEqualTo("[A, B]\n" + "[a, b]\n");
+    assertThat(out.toString()).contains("[A, B]");
+    assertThat(out.toString()).contains("[a, b]");
   }
 }

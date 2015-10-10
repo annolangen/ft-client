@@ -9,7 +9,9 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.io.ByteArrayOutputStream;
+import java.io.InputStreamReader;
 import java.io.PrintStream;
+import java.io.StringReader;
 
 import static com.google.common.truth.Truth.assertThat;
 import static java.util.Arrays.asList;
@@ -42,7 +44,7 @@ public class FtClientTest extends TestCase {
     when(sqlGet.execute()).thenReturn(sqlresponse);
     ByteArrayOutputStream out = new ByteArrayOutputStream();
 
-    ftClient.run(new PrintStream(out));
+    ftClient.run(new StringReader("select * from table"), new PrintStream(out));
 
     assertThat(out.toString()).contains("[A, B]");
     assertThat(out.toString()).contains("[a, b]");

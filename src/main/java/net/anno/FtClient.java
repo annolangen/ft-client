@@ -15,10 +15,13 @@ import com.google.api.services.fusiontables.Fusiontables;
 import com.google.api.services.fusiontables.FusiontablesScopes;
 import com.google.api.services.fusiontables.model.Sqlresponse;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintStream;
+import java.io.Reader;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 import java.util.List;
@@ -33,12 +36,16 @@ public class FtClient {
     this.fusiontables = fusiontables;
   }
 
-  void run(PrintStream out) throws IOException {
-    Fusiontables.Query.SqlGet sqlGet = fusiontables.query().sqlGet("show tables");
-    Sqlresponse sqlresponse = sqlGet.execute();
-    out.println(sqlresponse.getColumns());
-    for (List<Object> list : sqlresponse.getRows()) {
-      out.println(list);
+  void run(Reader reader, PrintStream out) throws IOException {
+    try (BufferedReader in = new BufferedReader(reader)) {
+      for (String line; (line = in.readLine()) != null; ) {
+        Fusiontables.Query.SqlGet sqlGet = fusiontables.query().sqlGet(line);
+        Sqlresponse sqlresponse = sqlGet.execute();
+        out.println(sqlresponse.getColumns());
+        for (List<Object> list : sqlresponse.getRows()) {
+          out.println(list);
+        }
+      }
     }
   }
 
@@ -78,6 +85,6 @@ public class FtClient {
   }
 
   public static void main(String[] args) throws Exception {
-     new FtClient(getFusiontables()).run(System.out);
+     new FtClient(getFusiontables()).run(new InputStreamReader(System.in), System.out);
   }
 }
